@@ -53,50 +53,72 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("This part works");
+    console.log("Initializing Firebase Auth and Firestore", auth, db);  // Check if these are initialized
+  
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("✅ User is authenticated:", user.email, user.uid);
+        } else {
+          console.log("❌ No authenticated user");
+        }
+      });
+      
       setUser(currentUser);
-      console.log("User: ", currentUser);
+      console.log("User: ", currentUser);  // Check if there's a logged-in user
       setLoading(false);
-
+  
       if (currentUser) {
         const token = await currentUser.getIdTokenResult();
         setIsAdmin(token.claims.admin === true);
-
+  
         try {
+          console.log("Fetching roster...");
+  
           // Fetch roster
           const rosterSnapshot = await getDocs(collection(db, 'rosters'));
+          console.log("roster snapshot:", rosterSnapshot);  // Check the snapshot
+          if (rosterSnapshot.empty) {
+            console.log("No documents in 'rosters'");
+          }
+  
           const rosterData = {};
-          console.log("roster snapshot:", rosterSnapshot);
           rosterSnapshot.forEach(doc => {
             const docData = doc.data();
-
+            console.log("Roster doc data:", docData);  // Check each document's data
+  
             const formattedShifts = docData.shifts
               .filter(shift => shift.start && shift.end && shift.employeeId)
-                .map(shift => ({
-              ...shift,
-              start: shift.start.toDate ? shift.start.toDate() : new Date(shift.start.seconds * 1000),
-              end: shift.end.toDate ? shift.end.toDate() : new Date(shift.end.seconds * 1000),
-            }));
-
-          
-
+              .map(shift => ({
+                ...shift,
+                start: shift.start.toDate ? shift.start.toDate() : new Date(shift.start.seconds * 1000),
+                end: shift.end.toDate ? shift.end.toDate() : new Date(shift.end.seconds * 1000),
+              }));
+  
             rosterData[doc.id] = {
               shifts: formattedShifts,
               date: new Date(doc.id)
             };
           });
+  
+          console.log("Formatted roster data:", rosterData);  // Verify this structure
           setRoster(rosterData);
-
+  
           // Fetch employees
+          console.log("Fetching employees...");
           const employeesSnapshot = await getDocs(collection(db, 'employees'));
+          console.log("Employees snapshot:", employeesSnapshot);  // Check if snapshot is received
+          if (employeesSnapshot.empty) {
+            console.log("No documents in 'employees'");
+          }
+  
           const employeeList = employeesSnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
           }));
-          console.log("Employees ", employeeList)
+          console.log("Employees data: ", employeeList);  // Check employee data structure
           setEmployees(employeeList);
-
+  
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -106,9 +128,10 @@ function App() {
         setEmployees([]);
       }
     });
-
+  
     return () => unsubscribe();
   }, []);
+  
 
   useEffect(()=>{
     console.log("Roster updated to: ",roster);
