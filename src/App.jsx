@@ -53,6 +53,7 @@ function App() {
   };
 
   useEffect(() => {
+    console.log("This part works");
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       console.log("User: ", currentUser);
@@ -71,12 +72,12 @@ function App() {
             const docData = doc.data();
 
             const formattedShifts = docData.shifts
-  .filter(shift => shift.start && shift.end && shift.employeeId)
-  .map(shift => ({
-    ...shift,
-    start: shift.start.toDate ? shift.start.toDate() : new Date(shift.start.seconds * 1000),
-    end: shift.end.toDate ? shift.end.toDate() : new Date(shift.end.seconds * 1000),
-  }));
+              .filter(shift => shift.start && shift.end && shift.employeeId)
+                .map(shift => ({
+              ...shift,
+              start: shift.start.toDate ? shift.start.toDate() : new Date(shift.start.seconds * 1000),
+              end: shift.end.toDate ? shift.end.toDate() : new Date(shift.end.seconds * 1000),
+            }));
 
           
 
