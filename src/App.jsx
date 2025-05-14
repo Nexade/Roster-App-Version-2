@@ -55,40 +55,51 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("Initializing Firebase Auth and Firestore", auth, db);  // Check if these are initialized
-    console.log("Is native: ", isNative);
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          console.log("✅ User is authenticated:", user.email, user.uid);
-        } else {
-          console.log("❌ No authenticated user");
-        }
-      });
-      
-      setUser(currentUser);
-      console.log("User: ", currentUser);  // Check if there's a logged-in user
-      setLoading(false);
+    console.log("Initializing Firebase Auth and Firestore", auth, db);
+    
+    // 1. First try to get user immediately (no waiting)
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      console.log("✅ User found immediately:", currentUser.email);
+      handleUserData(currentUser); // Process user data immediately
+      return;
+    }
   
+    // 2. Set up auth listener with timeout safety net
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log("Auth state changed:", user ? user.email : "No user");
+      await handleUserData(user); // Process user data when auth changes
+    });
+  
+    // 3. Safety net - force loading to complete after 3 seconds
+    const timeout = setTimeout(() => {
+      console.warn("Auth check timeout - proceeding anyway");
+      setLoading(false);
+    }, 3000);
+  
+    return () => {
+      unsubscribe();
+      clearTimeout(timeout);
+    };
+  
+    // Helper function to handle user data (reused for immediate check and listener)
+    async function handleUserData(currentUser) {
+      setUser(currentUser);
+      
       if (currentUser) {
+        console.log("✅ User is authenticated:", currentUser.email, currentUser.uid);
         const token = await currentUser.getIdTokenResult();
         setIsAdmin(token.claims.admin === true);
   
         try {
+          // Fetch roster data (EXACTLY AS IN YOUR ORIGINAL CODE)
           console.log("Fetching roster...");
-  
-          // Fetch roster
           const rosterSnapshot = await getDocs(collection(db, 'rosters'));
-          console.log("roster snapshot:", rosterSnapshot);  // Check the snapshot
-          if (rosterSnapshot.empty) {
-            console.log("No documents in 'rosters'");
-          }
-  
+          console.log("roster snapshot:", rosterSnapshot);
+          
           const rosterData = {};
           rosterSnapshot.forEach(doc => {
             const docData = doc.data();
-            console.log("Roster doc data:", docData);  // Check each document's data
-  
             const formattedShifts = docData.shifts
               .filter(shift => shift.start && shift.end && shift.employeeId)
               .map(shift => ({
@@ -96,43 +107,37 @@ function App() {
                 start: shift.start.toDate ? shift.start.toDate() : new Date(shift.start.seconds * 1000),
                 end: shift.end.toDate ? shift.end.toDate() : new Date(shift.end.seconds * 1000),
               }));
-  
+            
             rosterData[doc.id] = {
               shifts: formattedShifts,
               date: new Date(doc.id)
             };
           });
-  
-          console.log("Formatted roster data:", rosterData);  // Verify this structure
           setRoster(rosterData);
   
-          // Fetch employees
+          // Fetch employees data (EXACTLY AS IN YOUR ORIGINAL CODE)
           console.log("Fetching employees...");
           const employeesSnapshot = await getDocs(collection(db, 'employees'));
-          console.log("Employees snapshot:", employeesSnapshot);  // Check if snapshot is received
-          if (employeesSnapshot.empty) {
-            console.log("No documents in 'employees'");
-          }
-  
           const employeeList = employeesSnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
           }));
-          console.log("Employees data: ", employeeList);  // Check employee data structure
           setEmployees(employeeList);
   
         } catch (error) {
           console.error('Error fetching data:', error);
         }
       } else {
+        console.log("❌ No authenticated user");
         setIsAdmin(false);
         setRoster({});
         setEmployees([]);
       }
-    });
-  
-    return () => unsubscribe();
+      
+      setLoading(false); // CRITICAL: Always set loading to false
+    }
   }, []);
+  
   
 
   useEffect(()=>{
