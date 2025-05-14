@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from './firebase';
 import { collection, getDocs, getDoc, setDoc, doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { Capacitor } from '@capacitor/core';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 
 
 import Authorisation from './pages/Authorisation';
@@ -29,7 +31,7 @@ function App() {
     { start: 0, end: 1439 },
     { start: 0, end: 1439 }
   ];
-  
+  const isNative = Capacitor.isNativePlatform();
   const updateEmployeeAvailability = async (employeeId, newAvailability) => {
     const ref = doc(db, "employees", employeeId);
     await updateDoc(ref, {
@@ -54,7 +56,7 @@ function App() {
 
   useEffect(() => {
     console.log("Initializing Firebase Auth and Firestore", auth, db);  // Check if these are initialized
-  
+    console.log("Is native: ", isNative);
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       onAuthStateChanged(auth, (user) => {
         if (user) {

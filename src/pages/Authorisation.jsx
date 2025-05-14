@@ -1,6 +1,6 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Authorisation() {
@@ -9,6 +9,10 @@ export default function Authorisation() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    console.log("Auth component loaded");
+  },[])
 
   const handleLogin = async (e) => {
     e.preventDefault();
