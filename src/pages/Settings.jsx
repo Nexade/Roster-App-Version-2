@@ -103,10 +103,11 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
 
       <section>
         <h3>Weekly Availability</h3>
+        <div style={{overflowX: 'auto'}}>
         <table className="availability-table">
         <thead>
             <tr>
-              <th></th>
+              <th className="sticky-cell"> </th>
               {DAYS.map((day) => (
                 <th key={day}>{day}</th>
               ))}
@@ -114,7 +115,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
           </thead>
           <tbody>
             <tr>
-              <td>Status</td>
+              <td className="sticky-cell">Status</td>
               {availability.map((slot, i) => (
                 <td key={i}>
                   <select
@@ -129,7 +130,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
               ))}
             </tr>
             <tr>
-              <td>Start</td>
+              <td className="sticky-cell" >Start</td>
               {availability.map((slot, i) => {
                 const mode = getMode(slot.start, slot.end);
                 return (
@@ -148,7 +149,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
               })}
             </tr>
             <tr>
-              <td>End</td>
+              <td className="sticky-cell" >End</td>
               {availability.map((slot, i) => {
                 const mode = getMode(slot.start, slot.end);
                 return (
@@ -168,11 +169,11 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
             </tr>
           </tbody>
         </table>
-
-        {availabilityMessage && <p>{availabilityMessage}</p>}
+        </div>
+        {availabilityMessage && <p className="availabilityMessage">{availabilityMessage}</p>}
       </section>
 
-      <section>
+      <section className="logout-section">
         <button onClick={handleLogout}>Log Out</button>
       </section>
     </div>

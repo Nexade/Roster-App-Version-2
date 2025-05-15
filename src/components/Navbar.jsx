@@ -2,19 +2,34 @@ import { Link, useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 
-export default function Navbar({isAdmin}) {
+import "../styles/Navbar.css";
 
+import { NavLink } from 'react-router-dom';
 
+export default function Navbar({ isAdmin }) {
   return (
-    <nav style={styles.nav}>
-      <Link style={styles.link} to="/home">Home</Link>
-      <Link style={styles.link} to="/roster">Roster</Link>
-      <Link style={styles.link} to="/messages">Messages</Link>
-      {isAdmin && <Link style={styles.link} to="/management">Management</Link>}
-      <Link style={styles.link} to="/settings">Settings</Link>
+    <nav>
+      <NavLink to="/home" className={({ isActive }) => isActive ? "active" : ""}>
+        Home
+      </NavLink>
+      <NavLink to="/roster" className={({ isActive }) => isActive ? "active" : ""}>
+        Roster
+      </NavLink>
+      <NavLink to="/messages" className={({ isActive }) => isActive ? "active" : ""}>
+        Messages
+      </NavLink>
+      {isAdmin && (
+        <NavLink to="/management" className={({ isActive }) => isActive ? "active" : ""}>
+          Management
+        </NavLink>
+      )}
+      <NavLink to="/settings" className={({ isActive }) => isActive ? "active" : ""}>
+        Settings
+      </NavLink>
     </nav>
   );
 }
+
 
 const styles = {
     nav: {

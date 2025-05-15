@@ -114,8 +114,7 @@ function App() {
             };
           });
           setRoster(rosterData);
-  
-          // Fetch employees data (EXACTLY AS IN YOUR ORIGINAL CODE)
+          
           console.log("Fetching employees...");
           const employeesSnapshot = await getDocs(collection(db, 'employees'));
           const employeeList = employeesSnapshot.docs.map(doc => ({

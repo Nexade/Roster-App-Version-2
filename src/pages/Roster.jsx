@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Timestamp } from 'firebase/firestore'; // For modular SDK
 import RosterDropdown from '../components/RosterDropdown';
 import ShiftHeatmap from '../components/ShiftHeapmap';
+import "../styles/Roster.css";
 
 
 const getWeekStart = (date) => {
@@ -500,20 +501,23 @@ const formatSimpleTimeInput = (input) => {
   currentDate.setHours(0, 0, 0, 0);
 
   return (
-    <div style={{ overflowX: 'auto', position: 'relative' }}>
-      {/* Week Navigation */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <button onClick={() => navigateWeek('prev')} style={{ padding: '5px 10px' }}>
+    <>
+    <div className="week-nav">
+        <button onClick={() => navigateWeek('prev')}>
           Previous Week
         </button>
-        <div style={{ fontWeight: 'bold' }}>{formatWeekRange()}</div>
-        <button onClick={() => navigateWeek('next')} style={{ padding: '5px 10px' }}>
+        <div className="week-range">{formatWeekRange()}</div>
+        <button onClick={() => navigateWeek('next')}>
           Next Week
         </button>
       </div>
+    <div style={{ overflowX: 'auto', position: 'relative' }}>
+        
+      {/* Week Navigation */}
+      
   
       {/* Edit Toggle Button */}
-      {isAdmin && (<>
+      {isAdmin && (<div className="admin-controls">
         {!showAvailability && <button 
           onClick={() => setIsEditing(!isEditing)}
           style={{ margin: '10px', padding: '5px 10px' }}
@@ -526,7 +530,7 @@ const formatSimpleTimeInput = (input) => {
             >
             {showAvailability ? "Show Roster" :"Show Employee Availability"}
         </button>}
-        </>
+        </div>
       )}
   
       {/* Main Roster Table */}
@@ -560,14 +564,10 @@ const formatSimpleTimeInput = (input) => {
             return (
               <tr 
                 key={employee.id}
-                style={{ backgroundColor: isCurrentUser ? '#f5f5f5' : 'transparent' }}
+                style={{ backgroundColor: isCurrentUser ? '#f5f5f5' : 'white' }}
               >
                 <td 
-                  style={{ 
-                    border: '1px solid #ccc', 
-                    padding: '8px',
-                    fontWeight: isCurrentUser ? 'bold' : 'normal'
-                  }}
+                  className="employee-cell"
                   onContextMenu={(e) => handleContextMenu(e, 'employee', { employee })}
                 >
                   {employee.name}
@@ -581,12 +581,6 @@ const formatSimpleTimeInput = (input) => {
                   return (
                     <td
                       key={dateKey}
-                      style={{ 
-                        border: '1px solid #ccc', 
-                        padding: '8px', 
-                        verticalAlign: 'top',
-                        backgroundColor: isCurrentDay ? '#e6f7ff' : 'transparent'
-                      }}
                       onMouseEnter={()=>{setHoveredDate(date)}}
                     >
                       {isEditing ? (
@@ -674,7 +668,8 @@ const formatSimpleTimeInput = (input) => {
           })}
         </tbody>
       </table>
-    <ShiftHeatmap shifts={getTodaysShifts(hoveredDate)}/>
+      {isAdmin &&
+    <ShiftHeatmap shifts={getTodaysShifts(hoveredDate)}/>}
       {/* Context Menu */}
       {contextMenu.visible && (
         <RosterDropdown
@@ -691,6 +686,7 @@ const formatSimpleTimeInput = (input) => {
         />
       )}
     </div>
+    </>
   );
 };
 

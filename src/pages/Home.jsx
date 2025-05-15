@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "../styles/Home.css";
 
 const Home = ({ user, employees, roster }) => {
   const [announcements, setAnnouncements] = useState([]);
@@ -58,14 +59,14 @@ const Home = ({ user, employees, roster }) => {
   
 
   return (
-    <div>
-      <h1>Welcome, {getDisplayName()}!</h1>
-      <p>{getNextShiftMessage()}</p>
-
+    <div className="home-container">
+      <h1 className="home-title">Welcome, {getDisplayName()}!</h1>
+      <p className="next-shift">{getNextShiftMessage()}</p>
+  
       {announcements.length > 0 && (
-        <div>
-          <h2>Announcements</h2>
-          <ul>
+        <div className="announcements-section">
+          <h2 className="announcements-title">Announcements</h2>
+          <ul className="announcements-list">
             {announcements.map((announcement, index) => (
               <li key={index}>{announcement}</li>
             ))}

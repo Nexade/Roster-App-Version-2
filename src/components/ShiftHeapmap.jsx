@@ -60,7 +60,7 @@ const ShiftHeatmap = ({ shifts }) => {
   // === JSX return ===
   return (
     <div style={{ width: `${blockWidth}px`, margin: '20px' }}>
-      {/* Top labels */}
+      {/* Top labels 
       <div
         style={{
           display: 'flex',
@@ -83,7 +83,7 @@ const ShiftHeatmap = ({ shifts }) => {
             {index === heat.length - 1 && <div style={{ transform: 'rotate(-45deg)' }}>{latest}</div>}
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Heatmap */}
       <div

@@ -1,0 +1,48 @@
+nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--color-bg);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(  --color-background-secondary);
+  }
+  
+  nav a {
+    color: var(--color-text);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  
+  nav a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--color-highlight);
+  }
+  
+  /* Active link style */
+  nav a.active {
+    color: var(--color-highlight);
+    font-weight: 600;
+  }
+  
+  /* Dark mode overrides */
+  @media (prefers-color-scheme: dark) {
+    nav {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    nav a:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--color-highlight-dark);
+    }
+    
+    nav a.active {
+      color: var(--color-highlight-dark);
+    }
+  }
