@@ -4,9 +4,9 @@
   --color-primary: #4285f4; /* Google blue, works well everywhere */
   --color-primary-dark: #3367d6;
   --color-background: #ffffff;
+  --color-bg-dark: #323232;
   --color-text: #202124;
   --color-highlight: #b92f2f;
-  --color-background-secondary: #b3b3b3;
   --color-button: #b92f2f;
   --color-button-hover:color-mix(in srgb, var(--color-button) 80%, black);
   --color-border: #dadce0;

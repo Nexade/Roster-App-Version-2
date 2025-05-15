@@ -2,6 +2,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Authorisation.css'
+import logo from '../assets/logo-placeholder.jpg';
 
 export default function Authorisation() {
   const [email, setEmail] = useState('');
@@ -29,7 +31,9 @@ export default function Authorisation() {
   };
 
   return (
+    <div className="grey-background">
     <form onSubmit={handleLogin}>
+    <img src={logo} className="logo-image"/>
       <h1>Login</h1>
       <input
         type="email"
@@ -50,5 +54,6 @@ export default function Authorisation() {
         {loading ? 'Logging in...' : 'Login'}
       </button>
     </form>
+    </div>
   );
 }

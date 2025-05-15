@@ -46,3 +46,24 @@ nav {
       color: var(--color-highlight-dark);
     }
   }
+
+  @media (max-width: 600px) {
+    nav a {
+      font-size: 0.8rem; /* Smaller font size */
+      padding: 0.5rem 0.3rem; /* Tighter padding */
+    }
+    
+    /* If you have icons in your navbar, you might want to shrink them too */
+    nav svg {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+  
+  /* Optional: For very small screens (below 400px) */
+  @media (max-width: 400px) {
+    nav a {
+      font-size: 0.7rem;
+      padding: 0.5rem 0.2rem;
+    }
+  }
