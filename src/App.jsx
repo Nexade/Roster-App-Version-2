@@ -21,6 +21,54 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [roster, setRoster] = useState({});
   const [employees, setEmployees] = useState([]);
+  const [chats, setChats] = useState([]);
+  const mockChats = [
+    {
+      name: "Project Team Alpha",
+      participants: [
+        "nexade100@gmail.com",
+        "xaeden.turner@gmail.com",
+        "megaepicfatness@gmail.com"
+      ],
+      messages: [
+        {
+          string: "Hey team, has anyone finished the report?",
+          date: new Date("2025-05-14T09:15:00"),
+          senderID: "xaeden.turner@gmail.com"
+        },
+        {
+          string: "Almost done, I'll share it shortly.",
+          date: new Date("2025-05-14T09:17:30"),
+          senderID: "nexade100@gmail.com"
+        },
+        {
+          string: "Great, thanks!",
+          date: new Date("2025-05-14T09:18:45"),
+          senderID: "xaeden.turner@gmail.com"
+        }
+      ]
+    },
+    {
+      name: "",
+      participants: [
+        "nexade100@gmail.com",
+        "xaeden.turner@gmail.com"
+      ],
+      messages: [
+        {
+          string: "Lunch today?",
+          date: new Date("2025-05-15T12:03:00"),
+          senderID: "nexade100@gmail.com"
+        },
+        {
+          string: "Sure, meet you in the break room at 12:30.",
+          date: new Date("2025-05-15T12:04:10"),
+          senderID: "xaeden.turner@gmail.com"
+        }
+      ]
+    }
+  ];
+  
 
   const blankAvailabilityTemplate = [
     { start: 0, end: 1439 },
@@ -114,7 +162,7 @@ function App() {
             };
           });
           setRoster(rosterData);
-          
+
           console.log("Fetching employees...");
           const employeesSnapshot = await getDocs(collection(db, 'employees'));
           const employeeList = employeesSnapshot.docs.map(doc => ({
@@ -313,7 +361,7 @@ function App() {
         />
         <Route
           path="/messages"
-          element={user ? <Messages user={user} /> : <Navigate to="/" />}
+          element={user ? <Messages user={user} chats={mockChats} employees={employees}/> : <Navigate to="/" />}
         />
         <Route
           path="/management"
