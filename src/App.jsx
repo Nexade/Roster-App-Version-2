@@ -5,6 +5,7 @@ import { auth, db } from './firebase';
 import { collection, getDocs, getDoc, setDoc, doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Capacitor } from '@capacitor/core';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { retrieveMessages } from './services/messaging';
 
 
 import Authorisation from './pages/Authorisation';
@@ -22,52 +23,7 @@ function App() {
   const [roster, setRoster] = useState({});
   const [employees, setEmployees] = useState([]);
   const [chats, setChats] = useState([]);
-  const mockChats = [
-    {
-      name: "Project Team Alpha",
-      participants: [
-        "nexade100@gmail.com",
-        "xaeden.turner@gmail.com",
-        "megaepicfatness@gmail.com"
-      ],
-      messages: [
-        {
-          string: "Hey team, has anyone finished the report?",
-          date: new Date("2025-05-14T09:15:00"),
-          senderID: "xaeden.turner@gmail.com"
-        },
-        {
-          string: "Almost done, I'll share it shortly.",
-          date: new Date("2025-05-14T09:17:30"),
-          senderID: "nexade100@gmail.com"
-        },
-        {
-          string: "Great, thanks!",
-          date: new Date("2025-05-14T09:18:45"),
-          senderID: "xaeden.turner@gmail.com"
-        }
-      ]
-    },
-    {
-      name: "",
-      participants: [
-        "nexade100@gmail.com",
-        "xaeden.turner@gmail.com"
-      ],
-      messages: [
-        {
-          string: "Lunch today?",
-          date: new Date("2025-05-15T12:03:00"),
-          senderID: "nexade100@gmail.com"
-        },
-        {
-          string: "Sure, meet you in the break room at 12:30.",
-          date: new Date("2025-05-15T12:04:10"),
-          senderID: "xaeden.turner@gmail.com"
-        }
-      ]
-    }
-  ];
+
   
 
   const blankAvailabilityTemplate = [
@@ -124,7 +80,7 @@ function App() {
       console.warn("Auth check timeout - proceeding anyway");
       setLoading(false);
     }, 3000);
-  
+
     return () => {
       unsubscribe();
       clearTimeout(timeout);
@@ -170,7 +126,13 @@ function App() {
             ...doc.data()
           }));
           setEmployees(employeeList);
-  
+          
+
+
+            const messages = await retrieveMessages();
+            console.log("Messages: ", messages);
+            setChats(messages);
+            
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -361,7 +323,7 @@ function App() {
         />
         <Route
           path="/messages"
-          element={user ? <Messages user={user} chats={mockChats} employees={employees}/> : <Navigate to="/" />}
+          element={user ? <Messages user={user} baseChats={chats} employees={employees}/> : <Navigate to="/" />}
         />
         <Route
           path="/management"

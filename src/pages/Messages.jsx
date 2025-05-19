@@ -1,25 +1,53 @@
 // Messages.jsx
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import "../styles/Messages.css";
+import { retrieveMessages, listenToChat, sendMessage } from '../services/messaging';
 
-const Messages = ({ chats, user, employees }) => {
+const Messages = ({user, employees, baseChats }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [messageInput, setMessageInput] = useState('');
+  const [chats, setChats] = useState(baseChats);
+  const messagesEndRef = useRef(null);
+
 
   const handleSend = (e) => {
     e.preventDefault();
     if (messageInput.trim() && selectedChat) {
-      // Call parent component's send handler here
+        console.log("sending: ", selectedChat.id, messageInput, user.email);
+      sendMessage(selectedChat.id, messageInput, user.email);
       setMessageInput('');
     }
   };
+
+
+  useEffect(() => {
+    if (!selectedChat) return;
+  
+    const unsubscribe = listenToChat(selectedChat.id, (messages) => {
+      setChats((prevChats) => {
+        return prevChats.map((chat) => {
+          if (chat.id === selectedChat.id) {
+            const updated = { ...chat, messages };
+            setSelectedChat(updated);
+            console.log("Update: ", updated);
+            return updated;
+          }
+          return chat;
+        });
+      });
+    });
+    return () => unsubscribe();
+  }, [selectedChat?.id]);
+  
+
+  
 
   return (
     <div className="messages-container">
       {/* Chat List Sidebar */}
       <div className="chat-list">
         <h2>Chats</h2>
-        {chats.map((chat) => (
+        {chats && chats.map((chat) => (
           <ChatListItem
             key={chat.participants.join()}
             chat={chat}
@@ -33,7 +61,7 @@ const Messages = ({ chats, user, employees }) => {
 
       {/* Message Area */}
       <div className="message-area">
-        {selectedChat ? (
+        {(chats && selectedChat) ? (
           <>
             <div className="chat-header">
               {getChatDisplayName(selectedChat, user, employees)}
@@ -44,7 +72,6 @@ const Messages = ({ chats, user, employees }) => {
               user={user}
               employees={employees}
             />
-
             <form onSubmit={handleSend} className="message-input">
               <input
                 type="text"
@@ -80,6 +107,18 @@ const ChatListItem = ({ chat, user, employees, onSelect, isSelected }) => {
 // Helper component for message list
 const MessageList = ({ messages, user, employees }) => {
   const sortedMessages = [...messages].sort((a, b) => a.date - b.date);
+    const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: 'smooth', // Smooth scrolling animation
+      block: 'nearest',   // Align to the bottom
+    });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <div className="message-list">
@@ -91,6 +130,7 @@ const MessageList = ({ messages, user, employees }) => {
           employees={employees}
         />
       ))}
+        <div ref={messagesEndRef} />
     </div>
   );
 };
