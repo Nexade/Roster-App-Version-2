@@ -8,6 +8,7 @@ const LoadScreen = () => {
       <div className="loading-content">
         <div className="logo-container">
           <img src={logoImg} alt="App Logo" className="logo-image" />
+          <div className='circle'/>
           {/*
           <div className="loading-ring">
             {[...Array(4)].map((_, i) => (

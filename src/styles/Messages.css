@@ -211,9 +211,9 @@
       padding-bottom: calc(1rem + env(safe-area-inset-bottom));
     }
     
-    input, button {
+    /*input, button { ––– Causes warning
       -webkit-appearance: none;
-    }
+    }*/
   }
   
   /* Dark Mode Adjustments */

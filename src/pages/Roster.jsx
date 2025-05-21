@@ -511,30 +511,24 @@ const formatSimpleTimeInput = (input) => {
           Next Week
         </button>
       </div>
-    <div style={{ overflowX: 'auto', position: 'relative' }}>
+    <div>
         
       {/* Week Navigation */}
       
   
       {/* Edit Toggle Button */}
       {isAdmin && (<div className="admin-controls">
-        {!showAvailability && <button 
-          onClick={() => setIsEditing(!isEditing)}
-          style={{ margin: '10px', padding: '5px 10px' }}
-        >
+        {!showAvailability && <button onClick={() => setIsEditing(!isEditing)} >
           {isEditing ? 'Stop Editing' : 'Edit Roster'}
         </button>}
-        {!isEditing && <button 
-            onClick={() => setShowAvailability(!showAvailability)}
-            style={{ margin: '10px', padding: '5px 10px' }}
-            >
+        {!isEditing && <button onClick={() => setShowAvailability(!showAvailability)} >
             {showAvailability ? "Show Roster" :"Show Employee Availability"}
         </button>}
         </div>
       )}
   
       {/* Main Roster Table */}
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table>
         <thead>
           <tr>
             <th style={{ border: '1px solid #ccc', padding: '8px' }}>Employees</th>
@@ -543,12 +537,8 @@ const formatSimpleTimeInput = (input) => {
               return (
                 <th 
                   key={date} 
-                  style={{ 
-                    border: '1px solid #ccc', 
-                    padding: '8px',
-                    backgroundColor: isCurrentDay ? '#e6f7ff' : 'transparent'
-                  }}
                   onMouseEnter={()=>{setHoveredDate(date)}}
+                  //className={isCurrentDay && "current-day"}
                   /*onContextMenu={(e) => handleContextMenu(e, 'date', { date })}*/
                 >
                   {formatDayName(date)}<br />
@@ -564,10 +554,10 @@ const formatSimpleTimeInput = (input) => {
             return (
               <tr 
                 key={employee.id}
-                style={{ backgroundColor: isCurrentUser ? '#f5f5f5' : 'white' }}
+                className={isCurrentUser ? 'current-user' : ""}
               >
                 <td 
-                  className="employee-cell"
+                  className= {"employee-cell"}
                   onContextMenu={(e) => handleContextMenu(e, 'employee', { employee })}
                 >
                   {employee.name}
@@ -582,6 +572,7 @@ const formatSimpleTimeInput = (input) => {
                     <td
                       key={dateKey}
                       onMouseEnter={()=>{setHoveredDate(date)}}
+                      className={isCurrentDay && "current-day"}
                     >
                       {isEditing ? (
                         <input
