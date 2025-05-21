@@ -15,6 +15,7 @@ import Messages from './pages/Messages';
 import Management from './pages/Management';
 import Navbar from './components/Navbar'; 
 import Settings from './pages/Settings';
+import LoadScreen from './components/LoadScreen';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -132,7 +133,7 @@ function App() {
             const messages = await retrieveMessages();
             console.log("Messages: ", messages);
             setChats(messages);
-            
+
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -154,7 +155,7 @@ function App() {
   },[roster]);
   
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadScreen/>;
 
   const addEmployee = async (newEmployee) => {
     console.log("New employee:", newEmployee);
