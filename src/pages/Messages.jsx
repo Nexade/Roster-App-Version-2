@@ -8,6 +8,8 @@ const Messages = ({user, employees, baseChats }) => {
   const [messageInput, setMessageInput] = useState('');
   const [chats, setChats] = useState(baseChats);
   const messagesEndRef = useRef(null);
+  const isMobileNative = window.matchMedia('(max-width: 768px), (hover: none) and (orientation: portrait)').matches;
+  const [showChatList, setShowChatList] = useState(false);
 
 
   const handleSend = (e) => {
@@ -45,6 +47,31 @@ const Messages = ({user, employees, baseChats }) => {
   return (
     <div className="messages-container">
       {/* Chat List Sidebar */}
+      {isMobileNative ? (
+        <>
+          <div className="chat-selector" onClick={() => setShowChatList(!showChatList)}>
+            <div className="chat-selector-header">
+              <span>{selectedChat ? getChatDisplayName(selectedChat, user, employees) : "Select Chat"}</span>
+              <span>{showChatList ? '▲' : '▼'}</span>
+            </div>
+          </div>
+          <div className={`chat-list ${showChatList ? 'active' : ''}`}>
+            {chats.map((chat) => (
+              <ChatListItem
+                key={chat.participants.join()}
+                chat={chat}
+                user={user}
+                employees={employees}
+                onSelect={() => {
+                  setSelectedChat(chat);
+                  setShowChatList(false);
+                }}
+                isSelected={selectedChat === chat}
+              />
+            ))}
+          </div>
+        </>
+      ) : (
       <div className="chat-list">
         <h2>Chats</h2>
         {chats && chats.map((chat) => (
@@ -58,14 +85,16 @@ const Messages = ({user, employees, baseChats }) => {
           />
         ))}
       </div>
-
+        )}
       {/* Message Area */}
       <div className="message-area">
         {(chats && selectedChat) ? (
           <>
+          {!isMobileNative && 
             <div className="chat-header">
               {getChatDisplayName(selectedChat, user, employees)}
             </div>
+            }
             
             <MessageList
               messages={selectedChat.messages}
@@ -122,21 +151,31 @@ const MessageList = ({ messages, user, employees }) => {
 
   return (
     <div className="message-list">
-      {sortedMessages.map((message, index) => (
-        <Message
-          key={index}
-          message={message}
-          isCurrentUser={message.senderID === user.email}
-          employees={employees}
-        />
-      ))}
+      {sortedMessages.map((message, index) => {
+        const useGap = 
+        (index == 0
+            || sortedMessages[index-1].senderID != message.senderID 
+            || message.date.getTime() - sortedMessages[index-1].date.getTime() >= 30 * 60 * 1000);
+        if(index > 0) console.log(`${message.string}, (${message.date.getTime()} - ${sortedMessages[index-1].date.getTime()})returns ${message.date.getTime() - sortedMessages[index-1].date.getTime() >= 30 * 60 * 1000}`);
+        return(
+            <>
+            {useGap && <div className='gap'/>}
+            <Message
+              key={index}
+              message={message}
+              isCurrentUser={message.senderID === user.email}
+              employees={employees}
+              useGap = {useGap}
+            />
+            </>);
+      })}
         <div ref={messagesEndRef} />
     </div>
   );
 };
 
 // Helper component for individual message
-const Message = ({ message, isCurrentUser, employees }) => {
+const Message = ({ message, isCurrentUser, employees, useGap }) => {
   const sender = employees.find(emp => emp.email === message.senderID);
   const time = message.date.toLocaleTimeString([], { 
     hour: '2-digit', 
@@ -145,12 +184,12 @@ const Message = ({ message, isCurrentUser, employees }) => {
 
   return (
     <div className={`message ${isCurrentUser ? 'current-user' : 'other-user'}`}>
-      {!isCurrentUser && (
+      {(!isCurrentUser && useGap) &&  (
         <div className="sender-name">{sender?.name || message.senderID}</div>
       )}
       <div className="message-content">
         <div className="message-text">{message.string}</div>
-        <div className="message-time">{time}</div>
+        {useGap && <div className="message-time">{time}</div>}
       </div>
     </div>
   );

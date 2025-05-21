@@ -3,12 +3,11 @@ nav {
     justify-content: space-around;
     align-items: center;
     padding: 1rem;
-    background-color: var(--color-bg);
+    background-color: var(--color-background);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: var(  --color-background-secondary);
   }
   
   nav a {
