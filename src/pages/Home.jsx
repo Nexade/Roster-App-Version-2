@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import "../styles/Home.css";
 
-const Home = ({ user, employees, roster }) => {
-  const [announcements, setAnnouncements] = useState([]);
+const Home = ({ user, employees, roster, announcements, isAdmin, postAnnouncement }) => {
 
-  useEffect(() => {
-    // Placeholder for announcements
-    setAnnouncements(["Remember to update your availability this week!"]);
-  }, []);
+  const [showAnnouncementInput, setShowAnnouncementInput] = useState(false);
+  const [newAnnouncement, setNewAnnouncement] = useState('');
+
 
   const getDisplayName = () => {
     if (employees && Array.isArray(employees)) {
@@ -56,6 +54,15 @@ const Home = ({ user, employees, roster }) => {
   
     return `Your next shift is at ${timeString} on ${weekday}.`;
   };
+
+  const handleAddAnnouncement = () => {
+    if (newAnnouncement.trim()) {
+    postAnnouncement(newAnnouncement.trim());
+      setNewAnnouncement('');
+      setShowAnnouncementInput(false);
+    }
+  };
+
   
 
   return (
@@ -68,8 +75,23 @@ const Home = ({ user, employees, roster }) => {
           <h2 className="announcements-title">Announcements</h2>
           <ul className="announcements-list">
             {announcements.map((announcement, index) => (
-              <li key={index}>{announcement}</li>
+              <li key={index}>{announcement.announcement}</li>
             ))}
+            {isAdmin &&
+                 (<li className="admin-announcement-controls">
+                {!showAnnouncementInput ? <button onClick={() => setShowAnnouncementInput(true)} className='plus-button'>+</button> :
+                 <>
+                 <input
+                   type="text"
+                   value={newAnnouncement}
+                   onChange={(e) => setNewAnnouncement(e.target.value)} //Sort out css for home page admin functions
+                   placeholder="Type your announcement"
+                 />
+                 <button onClick={handleAddAnnouncement} className='submit'>Submit</button>
+                 </>
+                 }
+               </li>)
+            }
           </ul>
         </div>
       )}

@@ -572,7 +572,7 @@ const formatSimpleTimeInput = (input) => {
                     <td
                       key={dateKey}
                       onMouseEnter={()=>{setHoveredDate(date)}}
-                      className={isCurrentDay && "current-day"}
+                      className={isCurrentDay ? "current-day" : ""}
                     >
                       {isEditing ? (
                         <input

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from './firebase';
-import { collection, getDocs, getDoc, setDoc, doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, getDoc, setDoc, doc, updateDoc, addDoc, deleteDoc, Timestamp, query, where} from 'firebase/firestore';
 import { Capacitor } from '@capacitor/core';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import { retrieveMessages } from './services/messaging';
@@ -24,6 +24,7 @@ function App() {
   const [roster, setRoster] = useState({});
   const [employees, setEmployees] = useState([]);
   const [chats, setChats] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
 
   
 
@@ -128,11 +129,25 @@ function App() {
           }));
           setEmployees(employeeList);
           
+          //Announcements
 
+        const now = Timestamp.now();
+        const q = query(
+          collection(db, 'announcements'),
+          where('expiry', '>', now)
+        );
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setAnnouncements(data);
+        console.log("Announcements: ", data);
 
-            const messages = await retrieveMessages();
-            console.log("Messages: ", messages);
-            setChats(messages);
+        //Messages
+        const messages = await retrieveMessages();
+        console.log("Messages: ", messages);
+        setChats(messages);
 
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -156,6 +171,31 @@ function App() {
   
 
   if (loading) return <LoadScreen/>;
+
+
+  async function postAnnouncement(announcement) {
+    const date = new Date();
+    const expiry = new Date(date)
+    expiry.setDate(date.getDate() + 14);
+  
+    try {
+      const docRef = await addDoc(collection(db, 'announcements'), {
+        announcement,
+        date: date,
+        expiry: expiry,
+      });
+      console.log('Announcement posted with ID:', docRef.id);
+      setAnnouncements((prev) => [
+        ...prev,
+        {announcement, date, expiry}
+      ]);
+      return docRef.id;
+    } catch (error) {
+      console.error('Error posting announcement:', error);
+      throw error;
+    }
+  }
+  
 
   const addEmployee = async (newEmployee) => {
     console.log("New employee:", newEmployee);
@@ -224,7 +264,7 @@ function App() {
       setEmployees(prev => prev.filter(emp => emp.id !== uid));
       await fetch(`http://localhost:5000/deleteEmployee/${uid}`, {
         method: 'DELETE',
-      });    
+      });
     } catch (error) {
       console.error("Error deleting employee:", error);
     }
@@ -316,7 +356,7 @@ function App() {
         />
         <Route
           path="/home"
-          element={user ? <Home user={user} employees={employees} roster={roster}/> : <Navigate to="/" />}
+          element={user ? <Home user={user} employees={employees} roster={roster} announcements={announcements} isAdmin={isAdmin} postAnnouncement={postAnnouncement}/> : <Navigate to="/" />}
         />
         <Route
           path="/roster"

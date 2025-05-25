@@ -129,7 +129,7 @@
     background-color: var(--color-text);
   }
   
-  .plus-button {
+  .employee-card .plus-button {
     font-size: 2rem;
     background-color: var(--color-button);
     color: white;
@@ -144,7 +144,7 @@
     transition: transform 0.2s ease, background-color 0.2s ease;
   }
   
-  .plus-button:hover {
+  .employee-card .plus-button:hover {
     background-color: var(--color-button-highlight);
     transform: scale(1.05);
   }

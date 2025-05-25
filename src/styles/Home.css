@@ -34,6 +34,94 @@
   .announcements-list {
     list-style-type: none;
     padding: 0;
+    position: relative;
+  }
+
+  .admin-announcement-controls .plus-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--color-button);
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0.5rem 0;
+  }
+  
+  .admin-announcement-controls .plus-button:hover {
+    transform: scale(1.1);
+    border: 10px;
+    border-color: black;
+    color:black;
+  }
+  
+  /* Announcement Input Container */
+  .announcements-list > li:last-child {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: var(--color-surface);
+    border-radius: 8px;
+  }
+  
+  /* Input Field */
+  .announcements-list input[type="text"] {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-size: 1rem;
+  }
+  
+  .announcements-list input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
+  }
+  
+  /* Submit Button */
+  .submit {
+    padding: 0.75rem 1.25rem;
+    background-color: var(--color-button);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+  }
+  
+  .submit:hover {
+    background-color: var(--color-button-highlight);
+  }
+  
+  .submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 600px) {
+    .announcements-list > li:last-child {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .plus-button {
+      width: 42px;
+      height: 42px;
+      font-size: 1.5rem;
+    }
   }
   
   .announcements-list li {
@@ -54,5 +142,13 @@
     .announcements-list li {
       background-color: var(--color-bg-dark);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+      .announcements-list input[type="text"] {
+        background-color: var(--color-bg-dark);
+      }
+      
+      .announcements-list > li:last-child {
+        background-color: var(--color-surface-dark);
+      }
     }
   }
