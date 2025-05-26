@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "../styles/Home.css";
 
-const Home = ({ user, employees, roster, announcements, isAdmin, postAnnouncement }) => {
+const Home = ({ user, employees, roster, announcements, isAdmin, postAnnouncement, deleteAnnouncement }) => {
 
   const [showAnnouncementInput, setShowAnnouncementInput] = useState(false);
   const [newAnnouncement, setNewAnnouncement] = useState('');
@@ -70,13 +70,24 @@ const Home = ({ user, employees, roster, announcements, isAdmin, postAnnouncemen
       <h1 className="home-title">Welcome, {getDisplayName()}!</h1>
       <p className="next-shift">{getNextShiftMessage()}</p>
   
-      {announcements.length > 0 && (
+      {(announcements.length  > 0 || isAdmin) && (
         <div className="announcements-section">
           <h2 className="announcements-title">Announcements</h2>
           <ul className="announcements-list">
-            {announcements.map((announcement, index) => (
-              <li key={index}>{announcement.announcement}</li>
-            ))}
+            {announcements.length  > 0 &&
+            announcements.map((announcement, index) => (
+              <li key={index}>
+                <span>{announcement.announcement}</span>
+                <button
+                    onClick={() => deleteAnnouncement(announcement.id)}
+                    className='delete-button'
+                >
+                    ✕
+                </button>
+                </li>
+
+            ))
+            }
             {isAdmin &&
                  (<li className="admin-announcement-controls">
                 {!showAnnouncementInput ? <button onClick={() => setShowAnnouncementInput(true)} className='plus-button'>+</button> :

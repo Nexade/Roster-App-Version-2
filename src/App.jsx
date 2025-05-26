@@ -131,18 +131,31 @@ function App() {
           
           //Announcements
 
-        const now = Timestamp.now();
-        const q = query(
-          collection(db, 'announcements'),
-          where('expiry', '>', now)
-        );
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setAnnouncements(data);
-        console.log("Announcements: ", data);
+          const now = Timestamp.now();
+          const allAnnouncementsSnap = await getDocs(collection(db, 'announcements'));
+    
+          const validAnnouncements = [];
+    
+          for (const document of allAnnouncementsSnap.docs) {
+            const data = document.data();
+            if (data.expiry.toMillis() <= now.toMillis()) {
+              // Delete expired announcement
+              await deleteDoc(doc(db, 'announcements', document.id));
+            } else {
+              validAnnouncements.push({
+                id: document.id,
+                ...data
+              });
+            }
+          }
+    
+          // Sort by date descending
+          validAnnouncements.sort((a, b) => b.date.toMillis() - a.date.toMillis());
+    
+            if(validAnnouncements.length > 0){
+              setAnnouncements(validAnnouncements);
+              console.log("Announcements: ", data);
+            }
 
         //Messages
         const messages = await retrieveMessages();
@@ -162,8 +175,7 @@ function App() {
       setLoading(false); // CRITICAL: Always set loading to false
     }
   }, []);
-  
-  
+
 
   useEffect(()=>{
     console.log("Roster updated to: ",roster);
@@ -187,7 +199,7 @@ function App() {
       console.log('Announcement posted with ID:', docRef.id);
       setAnnouncements((prev) => [
         ...prev,
-        {announcement, date, expiry}
+        {announcement, date, expiry, id: docRef.id}
       ]);
       return docRef.id;
     } catch (error) {
@@ -196,6 +208,21 @@ function App() {
     }
   }
   
+  async function deleteAnnouncement(id) {
+    if (!id) throw new Error('No ID provided for deletion.');
+  
+    try {
+      await deleteDoc(doc(db, 'announcements', id));
+      console.log(`Announcement with ID "${id}" deleted successfully.`);
+    } catch (error) {
+      console.error('Error deleting announcement:', error);
+      throw error;
+    }
+    const newAnnouncements = announcements.filter((a) => a.id !== id);
+
+    console.log("New announcements: ", newAnnouncements);
+    setAnnouncements(newAnnouncements);
+  }
 
   const addEmployee = async (newEmployee) => {
     console.log("New employee:", newEmployee);
@@ -356,7 +383,7 @@ function App() {
         />
         <Route
           path="/home"
-          element={user ? <Home user={user} employees={employees} roster={roster} announcements={announcements} isAdmin={isAdmin} postAnnouncement={postAnnouncement}/> : <Navigate to="/" />}
+          element={user ? <Home user={user} employees={employees} roster={roster} announcements={announcements} deleteAnnouncement={deleteAnnouncement} isAdmin={isAdmin} postAnnouncement={postAnnouncement}/> : <Navigate to="/" />}
         />
         <Route
           path="/roster"

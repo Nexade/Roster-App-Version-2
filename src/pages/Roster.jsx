@@ -528,6 +528,7 @@ const formatSimpleTimeInput = (input) => {
       )}
   
       {/* Main Roster Table */}
+      <div className='table-container'>
       <table>
         <thead>
           <tr>
@@ -659,6 +660,7 @@ const formatSimpleTimeInput = (input) => {
           })}
         </tbody>
       </table>
+      </div>
       {isAdmin &&
     <ShiftHeatmap shifts={getTodaysShifts(hoveredDate)}/>}
       {/* Context Menu */}

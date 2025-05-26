@@ -53,12 +53,24 @@
     margin: 0.5rem 0;
   }
   
+  li{
+    display: flex;
+    justify-content: space-between;
+  }
+  
   .admin-announcement-controls .plus-button:hover {
     transform: scale(1.1);
     border: 10px;
     border-color: black;
     color:black;
   }
+
+  li .delete-button {
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    }
   
   /* Announcement Input Container */
   .announcements-list > li:last-child {

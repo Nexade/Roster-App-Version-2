@@ -96,10 +96,10 @@
   
   .edit-button:hover,
   .save-button:hover {
-    background-color: var(--color-button-highlight);
+    background-color: var(--color-button-hover);
   }
   
-  .delete-button {
+  .employee-card .delete-button {
     background-color: #e63946;
     color: white;
     border: none;
@@ -110,12 +110,12 @@
     transition: background-color 0.2s ease;
   }
   
-  .delete-button:hover {
+  .employee-card .delete-button:hover {
     background-color: #c1121f;
   }
   
   .cancel-button {
-    background-color: var(--color-text-secondary);
+    background-color: grey;
     color: white;
     border: none;
     border-radius: 6px;
