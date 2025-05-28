@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,13 +22,15 @@ export default function Authorisation() {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/home'); // Redirect after login
+    navigate('/home');
     } catch (error) {
-      setError(error.message); // Display error message below the form
+      setError(error.message);
+      console.error("Login error:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="grey-background">

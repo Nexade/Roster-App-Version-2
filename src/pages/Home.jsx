@@ -78,12 +78,12 @@ const Home = ({ user, employees, roster, announcements, isAdmin, postAnnouncemen
             announcements.map((announcement, index) => (
               <li key={index}>
                 <span>{announcement.announcement}</span>
-                <button
+                {isAdmin && <button
                     onClick={() => deleteAnnouncement(announcement.id)}
                     className='delete-button'
                 >
                     ✕
-                </button>
+                </button> }
                 </li>
 
             ))

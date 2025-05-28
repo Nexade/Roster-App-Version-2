@@ -107,7 +107,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
         <table className="availability-table">
         <thead>
             <tr>
-              <th className="sticky-cell"> </th>
+              <th className="side-cell"> </th>
               {DAYS.map((day) => (
                 <th key={day}>{day}</th>
               ))}
@@ -115,7 +115,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
           </thead>
           <tbody>
             <tr>
-              <td className="sticky-cell">Status</td>
+              <td className="side-cell">Status</td>
               {availability.map((slot, i) => (
                 <td key={i}>
                   <select
@@ -130,7 +130,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
               ))}
             </tr>
             <tr>
-              <td className="sticky-cell" >Start</td>
+              <td className="side-cell" >Start</td>
               {availability.map((slot, i) => {
                 const mode = getMode(slot.start, slot.end);
                 return (
@@ -149,7 +149,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
               })}
             </tr>
             <tr>
-              <td className="sticky-cell" >End</td>
+              <td className="side-cell" >End</td>
               {availability.map((slot, i) => {
                 const mode = getMode(slot.start, slot.end);
                 return (

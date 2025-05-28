@@ -1,5 +1,45 @@
 {
   "appId": "com.xaeden.rosterapp",
   "appName": "Roster App",
-  "webDir": "dist"
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": false,
+      "providers": ["google.com", "apple.com", "password"]
+    },
+    "FirebaseFirestore": {
+      "iosEmulatorFlavor": "FIRFirestoreVersion"
+    },
+    "FirebaseMessaging": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "androidScaleType": "CENTER_CROP",
+      "splashFullScreen": true,
+      "splashImmersive": false
+    }
+  },
+  "ios": {
+    "scheme": "App",
+    "deploymentTarget": "13.0",
+    "firebase": {
+      "analytics": true,
+      "crashlytics": false
+    },
+    "cordovaSwiftVersion": "5.1",
+    "limits": {
+      "maxLogFiles": 5
+    }
+  },
+  "server": {
+    "iosScheme": "capacitor",
+    "hostname": "localhost",
+    "allowNavigation": [
+      "firebaseapp.com",
+      "firebasestorage.googleapis.com"
+    ]
+  }
 }

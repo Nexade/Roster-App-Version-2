@@ -10,14 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@capacitor-firebase/app": "^7.2.0",
-    "@capacitor-firebase/authentication": "^7.2.0",
-    "@capacitor-firebase/firestore": "^7.2.0",
-    "@capacitor-firebase/messaging": "^7.2.0",
     "@capacitor/android": "^7.2.0",
     "@capacitor/cli": "^7.2.0",
     "@capacitor/core": "^7.2.0",
     "@capacitor/ios": "^7.2.0",
+    "capacitor": "^0.5.6",
     "firebase": "^11.6.0",
     "firebase-admin": "^13.3.0",
     "react": "^19.0.0",
@@ -34,5 +31,8 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "vite": "^6.3.1"
+  },
+  "resolutions": {
+    "firebase": "11.8.1"
   }
 }

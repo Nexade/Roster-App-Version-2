@@ -70,21 +70,21 @@
     -ms-overflow-style: none; /* IE/Edge */
   }
 
-  table {
+  .table-container table {
     border-collapse: collapse;
     table-layout: fixed;
     min-width: 900px;
     width: 100%;
   }
   
-  th {
+  .table-container th {
     background-color: var(--color-surface);
     position: sticky;
     top: 0;
     z-index: 10;
   }
   
-  th, td {
+  .table-container th, td {
     border: 1px solid var(--color-border);
     padding: 0.75rem;
     text-align: center;

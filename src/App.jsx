@@ -4,7 +4,6 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from './firebase';
 import { collection, getDocs, getDoc, setDoc, doc, updateDoc, addDoc, deleteDoc, Timestamp, query, where} from 'firebase/firestore';
 import { Capacitor } from '@capacitor/core';
-import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import { retrieveMessages } from './services/messaging';
 
 
@@ -60,120 +59,116 @@ function App() {
     }
   };
 
+  async function handleUserData(currentUser) {
+    setUser(currentUser);
+    
+    if (currentUser) {
+      console.log("✅ User is authenticated:", currentUser.email, currentUser.uid);
+      console.log("Current user –> ", currentUser);
+
+      const token = await currentUser.getIdTokenResult();
+      setIsAdmin(token.claims.admin === true);
+
+      try {
+        // Fetch roster data (EXACTLY AS IN YOUR ORIGINAL CODE)
+        console.log("Fetching roster...");
+        const rosterSnapshot = await getDocs(collection(db, 'rosters'));
+        console.log("roster snapshot:", rosterSnapshot);
+        
+        const rosterData = {};
+        rosterSnapshot.forEach(doc => {
+          const docData = doc.data();
+          const formattedShifts = docData.shifts
+            .filter(shift => shift.start && shift.end && shift.employeeId)
+            .map(shift => ({
+              ...shift,
+              start: shift.start.toDate ? shift.start.toDate() : new Date(shift.start.seconds * 1000),
+              end: shift.end.toDate ? shift.end.toDate() : new Date(shift.end.seconds * 1000),
+            }));
+          
+          rosterData[doc.id] = {
+            shifts: formattedShifts,
+            date: new Date(doc.id)
+          };
+        });
+        setRoster(rosterData);
+
+        console.log("Fetching employees...");
+        const employeesSnapshot = await getDocs(collection(db, 'employees'));
+        const employeeList = employeesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setEmployees(employeeList);
+        
+        //Announcements
+
+        const now = Timestamp.now();
+        const allAnnouncementsSnap = await getDocs(collection(db, 'announcements'));
+  
+        const validAnnouncements = [];
+  
+        for (const document of allAnnouncementsSnap.docs) {
+          const data = document.data();
+          if (data.expiry.toMillis() <= now.toMillis()) {
+            // Delete expired announcement
+            await deleteDoc(doc(db, 'announcements', document.id));
+          } else {
+            validAnnouncements.push({
+              id: document.id,
+              ...data
+            });
+          }
+        }
+  
+        // Sort by date descending
+        validAnnouncements.sort((a, b) => b.date.toMillis() - a.date.toMillis());
+  
+          if(validAnnouncements.length > 0){
+            setAnnouncements(validAnnouncements);
+            console.log("Announcements: ", validAnnouncements);
+          }
+
+      //Messages
+      const messages = await retrieveMessages();
+      console.log("Messages: ", messages);
+      setChats(messages);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    } else {
+      console.log("❌ No authenticated user");
+      setIsAdmin(false);
+      setRoster({});
+      setEmployees([]);
+    }
+    
+    setLoading(false); // CRITICAL: Always set loading to false
+  }
+
   useEffect(() => {
     console.log("Initializing Firebase Auth and Firestore", auth, db);
     
-    // 1. First try to get user immediately (no waiting)
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      console.log("✅ User found immediately:", currentUser.email);
-      handleUserData(currentUser); // Process user data immediately
-      return;
-    }
-  
-    // 2. Set up auth listener with timeout safety net
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      console.log("Auth state changed:", user ? user.email : "No user");
-      await handleUserData(user); // Process user data when auth changes
-    });
-  
-    // 3. Safety net - force loading to complete after 3 seconds
-    const timeout = setTimeout(() => {
-      console.warn("Auth check timeout - proceeding anyway");
-      setLoading(false);
-    }, 3000);
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    clearTimeout(timeout); // Clear fallback if auth state resolves
+    console.log("Auth state (cross-platform):", user?.email || "No user");
+    await handleUserData(user); // Handles null (logout)
+  });
 
-    return () => {
-      unsubscribe();
-      clearTimeout(timeout);
-    };
+  // Fallback for slow native init or stalled auth state
+  const timeout = setTimeout(() => {
+    console.log("Auth state resolved:", user ? "Signed in" : "No user");
+    handleUserData(null); // Assume no user
+  }, 3000);
+
+  return () => {
+    unsubscribe();
+    clearTimeout(timeout);
+  };
   
     // Helper function to handle user data (reused for immediate check and listener)
-    async function handleUserData(currentUser) {
-      setUser(currentUser);
-      
-      if (currentUser) {
-        console.log("✅ User is authenticated:", currentUser.email, currentUser.uid);
-        const token = await currentUser.getIdTokenResult();
-        setIsAdmin(token.claims.admin === true);
-  
-        try {
-          // Fetch roster data (EXACTLY AS IN YOUR ORIGINAL CODE)
-          console.log("Fetching roster...");
-          const rosterSnapshot = await getDocs(collection(db, 'rosters'));
-          console.log("roster snapshot:", rosterSnapshot);
-          
-          const rosterData = {};
-          rosterSnapshot.forEach(doc => {
-            const docData = doc.data();
-            const formattedShifts = docData.shifts
-              .filter(shift => shift.start && shift.end && shift.employeeId)
-              .map(shift => ({
-                ...shift,
-                start: shift.start.toDate ? shift.start.toDate() : new Date(shift.start.seconds * 1000),
-                end: shift.end.toDate ? shift.end.toDate() : new Date(shift.end.seconds * 1000),
-              }));
-            
-            rosterData[doc.id] = {
-              shifts: formattedShifts,
-              date: new Date(doc.id)
-            };
-          });
-          setRoster(rosterData);
-
-          console.log("Fetching employees...");
-          const employeesSnapshot = await getDocs(collection(db, 'employees'));
-          const employeeList = employeesSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          setEmployees(employeeList);
-          
-          //Announcements
-
-          const now = Timestamp.now();
-          const allAnnouncementsSnap = await getDocs(collection(db, 'announcements'));
     
-          const validAnnouncements = [];
-    
-          for (const document of allAnnouncementsSnap.docs) {
-            const data = document.data();
-            if (data.expiry.toMillis() <= now.toMillis()) {
-              // Delete expired announcement
-              await deleteDoc(doc(db, 'announcements', document.id));
-            } else {
-              validAnnouncements.push({
-                id: document.id,
-                ...data
-              });
-            }
-          }
-    
-          // Sort by date descending
-          validAnnouncements.sort((a, b) => b.date.toMillis() - a.date.toMillis());
-    
-            if(validAnnouncements.length > 0){
-              setAnnouncements(validAnnouncements);
-              console.log("Announcements: ", data);
-            }
-
-        //Messages
-        const messages = await retrieveMessages();
-        console.log("Messages: ", messages);
-        setChats(messages);
-
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      } else {
-        console.log("❌ No authenticated user");
-        setIsAdmin(false);
-        setRoster({});
-        setEmployees([]);
-      }
-      
-      setLoading(false); // CRITICAL: Always set loading to false
-    }
   }, []);
 
 
@@ -379,7 +374,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={user ? <Navigate to="/home" /> : <Authorisation />}
+          element={user ? <Navigate to="/home" /> : <Authorisation/>}
         />
         <Route
           path="/home"
