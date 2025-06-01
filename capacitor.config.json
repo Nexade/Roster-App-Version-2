@@ -38,8 +38,10 @@
     "iosScheme": "capacitor",
     "hostname": "localhost",
     "allowNavigation": [
-      "firebaseapp.com",
-      "firebasestorage.googleapis.com"
-    ]
+  "*.firebaseapp.com",
+  "firebasestorage.googleapis.com",
+  "identitytoolkit.googleapis.com",
+  "securetoken.googleapis.com"
+]
   }
 }

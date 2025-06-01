@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth'
 import { auth } from '../firebase';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,18 +18,25 @@ export default function Authorisation() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.log("Handling login...");
+  
     setError('');
     setLoading(true);
+  
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-    navigate('/home');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("✅ Sign-in success", userCredential.user);
+  
+      // Plan -> It returns an error when something is wrong, so if there is a timer to detect an error after 10 seconds then it could check firebase to find employee data
+      navigate('/home');
     } catch (error) {
-      setError(error.message);
-      console.error("Login error:", error);
+      console.error("❌ Sign-in failed", error);
+      setError('Failed to sign in. Check credentials or network.');
     } finally {
       setLoading(false);
     }
   };
+  
   
 
   return (
