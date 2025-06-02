@@ -1197,6 +1197,8 @@ PODS:
   - Capacitor (7.2.0):
     - CapacitorCordova
   - CapacitorCordova (7.2.0)
+  - CapacitorPushNotifications (7.0.1):
+    - Capacitor
   - Firebase/Auth (11.13.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 11.13.0)
@@ -1423,6 +1425,7 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Firestore
@@ -1458,12 +1461,15 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorPushNotifications:
+    :path: "../../node_modules/@capacitor/push-notifications"
 
 SPEC CHECKSUMS:
   abseil: a05cc83bf02079535e17169a73c5be5ba47f714b
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
   Capacitor: 03bc7cbdde6a629a8b910a9d7d78c3cc7ed09ea7
   CapacitorCordova: 5967b9ba03915ef1d585469d6e31f31dc49be96f
+  CapacitorPushNotifications: 6a2794788c583dd89215f1805ca4bced1b13dbdf
   Firebase: 3435bc66b4d494c2f22c79fd3aae4c1db6662327
   FirebaseAnalytics: 630349facf4a114a0977e5d7570e104261973287
   FirebaseAppCheckInterop: 72066489c209823649a997132bcd9269bc33a4bb
@@ -1486,6 +1492,6 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
 
-PODFILE CHECKSUM: d403597760fc27dc49ab88061e6b6791cfbc8152
+PODFILE CHECKSUM: 201a6f4140774e460400aff051a52141aaed6421
 
 COCOAPODS: 1.16.2

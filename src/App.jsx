@@ -5,6 +5,7 @@ import { auth, db } from './firebase';
 import { collection, getDocs, getDoc, setDoc, doc, updateDoc, addDoc, deleteDoc, Timestamp, query, where} from 'firebase/firestore';
 import { Capacitor } from '@capacitor/core';
 import { retrieveMessages } from './services/messaging';
+import {usePushNotifications} from './services/usePushNotifications';
 
 
 import Authorisation from './pages/Authorisation';
@@ -65,6 +66,9 @@ function App() {
     if (currentUser) {
       console.log("✅ User is authenticated:", currentUser.email, currentUser.uid);
       console.log("Current user –> ", currentUser);
+
+      console.log("usePushNotifications");
+      usePushNotifications(currentUser.uid);
 
       const token = await currentUser.getIdTokenResult();
       setIsAdmin(token.claims.admin === true);
