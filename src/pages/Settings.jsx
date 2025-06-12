@@ -142,7 +142,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
                         onChange={(e) => handleTimeChange(i, "start", e.target.value)}
                       />
                     ) : (
-                      <span>—</span>
+                      mode === "Available" ? <span>✅</span> :<span>❌</span>
                     )}
                   </td>
                 );
@@ -161,7 +161,7 @@ const Settings = ({ user, employees, handleLogout, updateEmployeeAvailability, u
                         onChange={(e) => handleTimeChange(i, "end", e.target.value)}
                       />
                     ) : (
-                      <span>—</span>
+                      mode === "Available" ? <span>✅</span> :<span>❌</span>
                     )}
                   </td>
                 );

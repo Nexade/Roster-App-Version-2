@@ -5,11 +5,11 @@ import {db} from "../src/firebase.js"
 // Sample JavaScript objects to upload
 const sampleData = [
     {
-      name: "Project Team Alpha",
+      name: "Team Group Chat",
       participants: [
-        "nexade100@gmail.com",
+        "example@gmail.com",
         "xaeden.turner@gmail.com",
-        "megaepicfatness@gmail.com"
+        "nexade100@gmail.com"
       ],
       messages: [
         {
@@ -20,7 +20,7 @@ const sampleData = [
         {
           string: "Almost done, I'll share it shortly.",
           date: new Date("2025-05-14T09:17:30"),
-          senderID: "nexade100@gmail.com"
+          senderID: "example@gmail.com"
         },
         {
           string: "Great, thanks!",
@@ -32,14 +32,14 @@ const sampleData = [
     {
       name: "",
       participants: [
-        "nexade100@gmail.com",
+        "example@gmail.com",
         "xaeden.turner@gmail.com"
       ],
       messages: [
         {
           string: "Lunch today?",
           date: new Date("2025-05-15T12:03:00"),
-          senderID: "nexade100@gmail.com"
+          senderID: "example@gmail.com"
         },
         {
           string: "Sure, meet you in the break room at 12:30.",

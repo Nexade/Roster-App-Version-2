@@ -6,8 +6,8 @@ import '../styles/Authorisation.css'
 import logo from '../assets/logo-placeholder.jpg';
 
 export default function Authorisation() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('example@gmail.com');
+  const [password, setPassword] = useState('defaultPassword123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -62,6 +62,7 @@ export default function Authorisation() {
       <button type="submit" disabled={loading}>
         {loading ? 'Logging in...' : 'Login'}
       </button>
+      <p>Here is the login screen where your employees would usually enter their email and password – For this demo the email and password are provided</p>
     </form>
     </div>
   );

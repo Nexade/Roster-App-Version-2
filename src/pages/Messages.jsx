@@ -40,6 +40,12 @@ const Messages = ({user, employees, baseChats }) => {
     });
     return () => unsubscribe();
   }, [selectedChat?.id]);
+
+  useEffect(() =>{
+    if(baseChats){
+      setSelectedChat(baseChats[0]);
+    }
+  }, baseChats)
   
 
   
